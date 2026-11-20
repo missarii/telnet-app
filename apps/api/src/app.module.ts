@@ -9,7 +9,7 @@ import { ParticipantsModule } from './participants/participants.module';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: ['.env', '../../.env'],
+      envFilePath: ['apps/api/.env', '.env', '../../.env', '../.env'],
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],

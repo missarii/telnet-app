@@ -16,7 +16,10 @@ import { JwtStrategy } from './jwt.strategy';
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (config: ConfigService) => ({
-        secret: config.get<string>('JWT_SECRET'),
+        secret:
+          config.get<string>('JWT_SECRET') ||
+          process.env.JWT_SECRET ||
+          'telnet_default_jwt_secret_32_chars_min',
         signOptions: { expiresIn: '7d' },
       }),
     }),
