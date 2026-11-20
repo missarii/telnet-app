@@ -11,7 +11,7 @@ redis:
 
 keys:
   # CHANGE THESE IN PRODUCTION — generate with: openssl rand -hex 32
-  devkey: secret
+  devkey: telnet_livekit_secret_key_32_characters_minimum
 
 room:
   empty_timeout: 300        # seconds before empty room is cleaned up
@@ -24,8 +24,4 @@ logging:
 # WebRTC ICE / TURN configuration
 # coturn is running on the host network
 turn:
-  enabled: true
-  domain: localhost
-  cert_file: ""
-  key_file: ""
-  external_tls: false
+  enabled: false
