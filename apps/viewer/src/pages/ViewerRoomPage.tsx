@@ -78,10 +78,12 @@ export default function ViewerRoomPage() {
         setToken(tokenData.token);
         setLivekitUrl(tokenData.livekitUrl);
       } catch (err: unknown) {
-        const msg = err && typeof err === 'object' && 'message' in err
-          ? String((err as { message: unknown }).message)
-          : 'Room not found or access denied.';
-        setInitError(msg);
+        const anyErr = err as { response?: { data?: { message?: string } }; message?: string };
+        const msg =
+          anyErr?.response?.data?.message ||
+          anyErr?.message ||
+          'Room not found or access denied.';
+        setInitError(typeof msg === 'string' ? msg : 'Room not found or access denied.');
       } finally {
         setIsLoading(false);
       }

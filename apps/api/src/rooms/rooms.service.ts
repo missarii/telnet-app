@@ -24,7 +24,7 @@ export class RoomsService {
   ) {}
 
   private generateInviteCode(): string {
-    return crypto.randomBytes(4).toString('hex').toUpperCase();
+    return 'TEL-' + crypto.randomBytes(4).toString('hex').toUpperCase();
   }
 
   async createRoom(hostId: string, dto: CreateRoomDto, displayName: string): Promise<Room> {
@@ -71,11 +71,18 @@ export class RoomsService {
   }
 
   async getRoomByInviteCode(code: string): Promise<Room> {
+    const raw = code.toUpperCase();
+    const withoutPrefix = raw.replace(/^TEL-/, '');
+    const withPrefix = raw.startsWith('TEL-') ? raw : `TEL-${raw}`;
     const room = await this.roomRepository.findOne({
-      where: { inviteCode: code.toUpperCase() },
+      where: [
+        { inviteCode: raw },
+        { inviteCode: withoutPrefix },
+        { inviteCode: withPrefix },
+      ],
       relations: { participants: true },
     });
-    if (!room) throw new NotFoundException('Room not found');
+    if (!room) throw new NotFoundException(`Room with invite code "${code}" not found`);
     return room;
   }
 

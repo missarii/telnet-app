@@ -1,7 +1,7 @@
 import axios from 'axios';
 import type { Room, TokenResponse } from '../types';
 
-const BASE_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:3001';
+const BASE_URL = import.meta.env.VITE_API_URL || '/api/v1';
 
 const client = axios.create({ baseURL: BASE_URL });
 
@@ -9,7 +9,7 @@ const client = axios.create({ baseURL: BASE_URL });
  * Look up a room by its invite code (e.g. "TEL-ABCD1234").
  */
 export async function getRoomByInviteCode(inviteCode: string): Promise<Room> {
-  const { data } = await client.get<Room>(`/rooms/invite/${inviteCode}`);
+  const { data } = await client.get<Room>(`/rooms/invite/${encodeURIComponent(inviteCode)}`);
   return data;
 }
 
