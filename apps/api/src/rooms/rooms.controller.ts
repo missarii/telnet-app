@@ -22,11 +22,11 @@ interface AuthRequest {
 }
 
 @Controller('rooms')
-@UseGuards(JwtAuthGuard)
 export class RoomsController {
   constructor(private readonly roomsService: RoomsService) {}
 
   @Post()
+  @UseGuards(JwtAuthGuard)
   createRoom(@Request() req: AuthRequest, @Body() dto: CreateRoomDto) {
     return this.roomsService.createRoom(req.user.id, dto, req.user.displayName);
   }
@@ -42,26 +42,31 @@ export class RoomsController {
   }
 
   @Post(':id/join')
+  @UseGuards(JwtAuthGuard)
   joinRoom(@Param('id') id: string, @Request() req: AuthRequest) {
     return this.roomsService.joinRoom(id, req.user.id, req.user.displayName);
   }
 
   @Delete(':id/leave')
+  @UseGuards(JwtAuthGuard)
   leaveRoom(@Param('id') id: string, @Request() req: AuthRequest) {
     return this.roomsService.leaveRoom(id, req.user.id);
   }
 
   @Patch(':id/lock')
+  @UseGuards(JwtAuthGuard)
   lockRoom(@Param('id') id: string, @Request() req: AuthRequest) {
     return this.roomsService.lockRoom(id, req.user.id);
   }
 
   @Delete(':id')
+  @UseGuards(JwtAuthGuard)
   deleteRoom(@Param('id') id: string, @Request() req: AuthRequest) {
     return this.roomsService.deleteRoom(id, req.user.id);
   }
 
   @Delete(':id/participants/:participantId')
+  @UseGuards(JwtAuthGuard)
   kickParticipant(
     @Param('id') id: string,
     @Param('participantId') participantId: string,
@@ -71,7 +76,25 @@ export class RoomsController {
   }
 
   @Get(':id/token')
-  getLivekitToken(@Param('id') id: string, @Request() req: AuthRequest) {
-    return this.roomsService.getLivekitToken(id, req.user.id, req.user.displayName);
+  @UseGuards(JwtAuthGuard)
+  async getHostLivekitToken(@Param('id') id: string, @Request() req: AuthRequest) {
+    const token = await this.roomsService.getLivekitToken(id, req.user.id, req.user.displayName);
+    return {
+      token,
+      livekitUrl: process.env.LIVEKIT_PUBLIC_URL || process.env.LIVEKIT_URL || 'ws://161.33.76.85:7880',
+    };
+  }
+
+  @Post(':id/token')
+  async getViewerLivekitToken(
+    @Param('id') id: string,
+    @Body() body: { participantName?: string },
+  ) {
+    const identity = body?.participantName || `viewer-${Math.random().toString(36).slice(2, 8)}`;
+    const token = await this.roomsService.getLivekitToken(id, identity, identity);
+    return {
+      token,
+      livekitUrl: process.env.LIVEKIT_PUBLIC_URL || process.env.LIVEKIT_URL || 'ws://161.33.76.85:7880',
+    };
   }
 }
