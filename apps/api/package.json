@@ -1,0 +1,46 @@
+{
+  "name": "@telnet/api",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "ts-node -r tsconfig-paths/register src/main.ts",
+    "build": "tsc -p tsconfig.build.json",
+    "start": "node dist/main",
+    "start:dev": "nest start --watch",
+    "lint": "eslint \"{src,apps,libs,test}/**/*.ts\""
+  },
+  "dependencies": {
+    "@nestjs/common": "latest",
+    "@nestjs/config": "latest",
+    "@nestjs/core": "latest",
+    "@nestjs/jwt": "latest",
+    "@nestjs/passport": "^12.0.2",
+    "@nestjs/platform-express": "latest",
+    "@nestjs/platform-socket.io": "latest",
+    "@nestjs/typeorm": "latest",
+    "@nestjs/websockets": "latest",
+    "@types/passport-jwt": "^4.0.1",
+    "bcrypt": "latest",
+    "class-transformer": "latest",
+    "class-validator": "latest",
+    "ioredis": "latest",
+    "livekit-server-sdk": "latest",
+    "passport": "^0.7.0",
+    "passport-jwt": "^4.0.1",
+    "pg": "latest",
+    "redis": "latest",
+    "reflect-metadata": "latest",
+    "rxjs": "latest",
+    "socket.io": "latest",
+    "typeorm": "latest"
+  },
+  "devDependencies": {
+    "@nestjs/cli": "latest",
+    "@types/bcrypt": "latest",
+    "@types/node": "latest",
+    "@types/pg": "latest",
+    "ts-node": "latest",
+    "tsconfig-paths": "latest",
+    "typescript": "latest"
+  }
+}

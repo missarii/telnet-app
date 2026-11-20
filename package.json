@@ -1,0 +1,12 @@
+{
+  "name": "telnet-monorepo",
+  "private": true,
+  "workspaces": ["apps/*", "packages/*"],
+  "scripts": {
+    "dev:desktop": "pnpm --filter @telnet/desktop dev",
+    "dev:api": "pnpm --filter @telnet/api dev",
+    "build:desktop": "pnpm --filter @telnet/desktop build",
+    "build:api": "pnpm --filter @telnet/api build"
+  },
+  "engines": { "node": ">=20", "pnpm": ">=9" }
+}

@@ -1,0 +1,10 @@
+.env
+*.env.local
+node_modules/
+dist/
+release/
+.pnpm-store/
+*.log
+*.tsbuildinfo
+.DS_Store
+Thumbs.db

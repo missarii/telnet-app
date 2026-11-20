@@ -1,0 +1,66 @@
+version: '3.9'
+
+services:
+  # ── PostgreSQL ────────────────────────────────────────────────────────────────
+  postgres:
+    image: postgres:16-alpine
+    container_name: telnet-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: telnet
+      POSTGRES_USER: telnet
+      POSTGRES_PASSWORD: telnet_password
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U telnet']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ── Redis ─────────────────────────────────────────────────────────────────────
+  redis:
+    image: redis:7-alpine
+    container_name: telnet-redis
+    restart: unless-stopped
+    ports:
+      - '6379:6379'
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ── LiveKit SFU ───────────────────────────────────────────────────────────────
+  livekit:
+    image: livekit/livekit-server:latest
+    container_name: telnet-livekit
+    restart: unless-stopped
+    command: '--config /etc/livekit.yaml'
+    ports:
+      - '7880:7880'   # HTTP / WebSocket signaling
+      - '7881:7881'   # RTC over TCP
+      - '7882:7882/udp' # RTC over UDP
+    volumes:
+      - ./infrastructure/livekit/livekit.yaml:/etc/livekit.yaml:ro
+    depends_on:
+      redis:
+        condition: service_healthy
+
+  # ── coturn TURN server ────────────────────────────────────────────────────────
+  coturn:
+    image: coturn/coturn:latest
+    container_name: telnet-coturn
+    restart: unless-stopped
+    network_mode: host          # TURN needs to see real client IPs
+    volumes:
+      - ./infrastructure/coturn/turnserver.conf:/etc/coturn/turnserver.conf:ro
+    command: '-c /etc/coturn/turnserver.conf'
+
+volumes:
+  postgres_data:
+  redis_data:

@@ -1,0 +1,31 @@
+port: 7880
+rtc:
+  port_range_start: 50000
+  port_range_end: 60000
+  tcp_port: 7881
+  udp_port: 7882
+
+# Use Redis for distributed room state (optional for single-node)
+redis:
+  address: redis:6379
+
+keys:
+  # CHANGE THESE IN PRODUCTION — generate with: openssl rand -hex 32
+  devkey: secret
+
+room:
+  empty_timeout: 300        # seconds before empty room is cleaned up
+  max_participants: 11      # 1 host + 10 viewers
+
+logging:
+  level: info
+  sample: true
+
+# WebRTC ICE / TURN configuration
+# coturn is running on the host network
+turn:
+  enabled: true
+  domain: localhost
+  cert_file: ""
+  key_file: ""
+  external_tls: false
